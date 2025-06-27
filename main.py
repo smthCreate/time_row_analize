@@ -23,7 +23,7 @@ def main():
     # Параметры резонатора (подбираются экспериментально)
     sample_rate = 1000  # Частота дискретизации (Гц)
     center_freq = 50  # Центральная частота (Гц) - нужно уточнить по спектру
-    bandwidth_param = 0.9  # Параметр a2 для регулировки полосы
+    bandwidth_param = 0.5  # Параметр a2 для регулировки полосы
 
     # Создаем и применяем фильтр
     resonator = SecondOrderResonator(sample_rate, center_freq, bandwidth_param)
@@ -54,7 +54,7 @@ def main():
             break
 
     # Сохраняем итоговые результаты
-    with open('results/results.txt', 'w') as f:
+    with open('results/results.txt', 'w', encoding='utf-8') as f:
         f.write(f"Итог работы:\n")
         f.write(f"1. Цифра, переданная в сигнале: {digit}\n")
         f.write(f"2. Выбранное значение коэффициента a2: {bandwidth_param}\n")
