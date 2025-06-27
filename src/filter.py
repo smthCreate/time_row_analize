@@ -2,25 +2,25 @@ import numpy as np
 
 
 class SecondOrderResonator:
-    def __init__(self, sample_rate, center_freq, bandwidth):
+    def __init__(self, sample_rate, center_freq, a2):
         """
         Инициализация резонатора второго порядка.
 
         :param sample_rate: частота дискретизации (Гц)
         :param center_freq: центральная частота (Гц)
-        :param bandwidth: ширина полосы пропускания (Гц)
+        :param a2: параметр регулировки полосы пропускания (-1..+1)
         """
         self.sample_rate = sample_rate
         self.center_freq = center_freq
-        self.bandwidth = bandwidth
+        self.a2 = a2
 
-        # Расчет коэффициентов фильтра
-        r = 1 - (bandwidth * np.pi / sample_rate)
-        theta = 2 * np.pi * center_freq / sample_rate
+        # Расчет параметров фильтра согласно формуле (2.1)
+        omega0 = 2 * np.pi * center_freq / sample_rate
+        cos_omega0 = np.cos(omega0)
 
-        self.b0 = (1 - r) * np.sqrt(1 - 2 * r * np.cos(2 * theta) + r ** 2)
-        self.a1 = -2 * r * np.cos(theta)
-        self.a2 = r ** 2
+        # Коэффициенты передаточной функции
+        self.b0 = 1 - self.a2
+        self.a1 = -(self.a2 + 1) * cos_omega0
 
         # Инициализация состояний фильтра
         self.x1 = 0

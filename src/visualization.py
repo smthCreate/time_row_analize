@@ -1,14 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 def plot_signal(signal, title, filename):
     """
     Построение графика сигнала и сохранение в файл.
-
-    :param signal: сигнал для визуализации
-    :param title: заголовок графика
-    :param filename: имя файла для сохранения
     """
     plt.figure(figsize=(12, 4))
     plt.plot(signal)
@@ -19,14 +14,9 @@ def plot_signal(signal, title, filename):
     plt.savefig(filename)
     plt.close()
 
-
 def plot_spectrum(spectrum, title, filename):
     """
     Построение амплитудного спектра сигнала.
-
-    :param spectrum: кортеж (частоты, амплитуды)
-    :param title: заголовок графика
-    :param filename: имя файла для сохранения
     """
     xf, yf = spectrum
     plt.figure(figsize=(12, 4))
@@ -38,25 +28,12 @@ def plot_spectrum(spectrum, title, filename):
     plt.savefig(filename)
     plt.close()
 
-
-def save_morse_code(signal, sample_rate, filename):
+def save_morse_code(binary_signal, filename):
     """
-    Демодуляция и визуализация кода Морзе.
-
-    :param signal: отфильтрованный сигнал
-    :param sample_rate: частота дискретизации
-    :param filename: имя файла для сохранения
+    Визуализация бинарного сигнала с кодом Морзе.
     """
-    # Простая демодуляция огибающей
-    envelope = np.abs(signal)
-
-    # Нормировка и пороговая обработка
-    threshold = 0.5 * np.max(envelope)
-    morse_code = (envelope > threshold).astype(int)
-
-    # Визуализация
-    plt.figure(figsize=(12, 4))
-    plt.plot(morse_code)
+    plt.figure(figsize=(12, 2))
+    plt.step(range(len(binary_signal)), binary_signal, where='post')
     plt.title('Демодулированный код Морзе')
     plt.xlabel('Отсчеты')
     plt.ylabel('Состояние (0/1)')

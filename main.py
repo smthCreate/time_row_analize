@@ -1,8 +1,9 @@
 import numpy as np
 import os
 from src.filter import SecondOrderResonator
-from src.analysis import analyze_signal
+from src.analysis import analyze_signal, detect_morse_timings
 from src.visualization import plot_signal, plot_spectrum, save_morse_code
+from src.morse import decode_morse_digit, MORSE_DIGITS
 
 
 def main():
@@ -22,10 +23,10 @@ def main():
     # Параметры резонатора (подбираются экспериментально)
     sample_rate = 1000  # Частота дискретизации (Гц)
     center_freq = 50  # Центральная частота (Гц) - нужно уточнить по спектру
-    bandwidth = 5  # Ширина полосы пропускания (Гц)
+    bandwidth_param = 0.9  # Параметр a2 для регулировки полосы
 
     # Создаем и применяем фильтр
-    resonator = SecondOrderResonator(sample_rate, center_freq, bandwidth)
+    resonator = SecondOrderResonator(sample_rate, center_freq, bandwidth_param)
     filtered_signal = resonator.filter(signal)
 
     # Анализируем отфильтрованный сигнал
@@ -36,7 +37,29 @@ def main():
     plot_spectrum(filtered_spectrum, 'Спектр отфильтрованного сигнала', 'results/filtered_spectrum.png')
 
     # Демодулируем и сохраняем код Морзе
-    save_morse_code(filtered_signal, sample_rate, 'results/morse_code.png')
+    envelope = np.abs(filtered_signal)
+    threshold = 0.5 * np.max(envelope)
+    morse_signal = (envelope > threshold).astype(int)
+    save_morse_code(morse_signal, 'results/morse_code.png')
+
+    # Определяем длительности элементов
+    dot_duration = detect_morse_timings(morse_signal, sample_rate)
+
+    # Декодируем цифру
+    morse_code = decode_morse_digit(morse_signal, sample_rate)
+    digit = None
+    for num, code in MORSE_DIGITS.items():
+        if code == morse_code:
+            digit = num
+            break
+
+    # Сохраняем итоговые результаты
+    with open('results/results.txt', 'w') as f:
+        f.write(f"Итог работы:\n")
+        f.write(f"1. Цифра, переданная в сигнале: {digit}\n")
+        f.write(f"2. Выбранное значение коэффициента a2: {bandwidth_param}\n")
+        f.write(f"3. Длительность элементарного такта кода Морзе: {dot_duration:.4f} сек\n")
+        f.write(f"4. Выбранное значение частоты настройки резонатора: {center_freq} Гц\n")
 
 
 if __name__ == "__main__":
