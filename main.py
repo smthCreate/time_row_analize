@@ -23,7 +23,7 @@ def main():
     # Параметры резонатора (подбираются экспериментально)
     sample_rate = 1000  # Частота дискретизации (Гц)
     center_freq = 50  # Центральная частота (Гц) - нужно уточнить по спектру
-    bandwidth_param = 0.5  # Параметр a2 для регулировки полосы
+    bandwidth_param = 0.57  # Параметр a2 для регулировки полосы
 
     # Создаем и применяем фильтр
     resonator = SecondOrderResonator(sample_rate, center_freq, bandwidth_param)
