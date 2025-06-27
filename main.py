@@ -4,6 +4,7 @@ from src.filter import SecondOrderResonator
 from src.analysis import analyze_signal, detect_morse_timings
 from src.visualization import plot_signal, plot_spectrum, save_morse_code
 from src.morse import decode_morse_digit, MORSE_DIGITS
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -41,7 +42,7 @@ def main():
     threshold = 0.5 * np.max(envelope)
     morse_signal = (envelope > threshold).astype(int)
     save_morse_code(morse_signal, 'results/morse_code.png')
-
+    print(morse_signal)
     # Определяем длительности элементов
     dot_duration = detect_morse_timings(morse_signal, sample_rate)
 
@@ -56,10 +57,10 @@ def main():
     # Сохраняем итоговые результаты
     with open('results/results.txt', 'w', encoding='utf-8') as f:
         f.write(f"Итог работы:\n")
-        f.write(f"1. Цифра, переданная в сигнале: {digit}\n")
-        f.write(f"2. Выбранное значение коэффициента a2: {bandwidth_param}\n")
-        f.write(f"3. Длительность элементарного такта кода Морзе: {dot_duration:.4f} сек\n")
-        f.write(f"4. Выбранное значение частоты настройки резонатора: {center_freq} Гц\n")
+        f.write(f"1. Выбранное значение коэффициента a2: {bandwidth_param}\n")
+        f.write(f"2. Длительность элементарного такта кода Морзе: {dot_duration:.4f} сек\n")
+        f.write(f"3. Выбранное значение частоты настройки резонатора: {center_freq} Гц\n")
+
 
 
 if __name__ == "__main__":
